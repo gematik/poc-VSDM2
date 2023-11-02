@@ -1,0 +1,17 @@
+{
+  "tgrEncodeAs": "JWT",
+  "header": {
+    "typ": "JWT",
+    "alg": "RS256"
+  },
+  "body": {
+    "iat": 1676447865,
+    "tid": "${insurant.telematikId}",
+    "iss": "popp.telematik-test",
+    "used_challenge": "1676447865:QjNBLPUMeBOusDfCK0zBkw==",
+    "enc_egk_data": "someEncryptedData"
+  },
+  "signature": {
+    "verifiedUsing": "poppServer"
+  }
+}

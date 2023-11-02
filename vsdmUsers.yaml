@@ -1,0 +1,12 @@
+insurant:
+  meine-super-telematik-id:
+    familyName: Meier
+    givenName: Ludger
+    birthDate: 1935-06-22
+    address:
+      line: Blumenweg 14
+      houseNumber: 14
+      streetName: Blumenweg
+      city: Esens
+      postalCode: 26427
+      country: D

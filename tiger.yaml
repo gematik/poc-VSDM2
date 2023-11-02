@@ -1,0 +1,30 @@
+lib:
+  activateWorkflowUi: false
+  httpClientConfig:
+    activateRbelWriter: true
+  rbelLogoFilePath: vsdm2logo.png
+
+tigerProxy:
+  keyFolders:
+    - .
+
+servers:
+  vsdmServer:
+    type: zion
+    zionConfiguration:
+      serverPort: "${ports.vsdmServer}"
+      mockResponses:
+        helloWorld:
+          requestCriterions:
+            - message.method == 'GET'
+            - message.path == '/vsdm'
+          assignments:
+            insurantId: "$.header.authorization..body.tid"
+          response:
+            statusCode: 200
+            bodyFile: vsdmAnswer.xml
+
+additionalYamls:
+  - filename: vsdmUsers.yaml
+    baseKey: vsdm
+  - filename: ports.yaml

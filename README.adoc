@@ -1,0 +1,131 @@
+:doctype: book
+ifndef::env-github[]
+image::doc/Gematik_Logo_Flag_With_Background.png[logo,width=200,height=47,role=right]
+endif::[]
+ifdef::env-github[]
+++++
+<img align="right" width="250" height="47" src="doc/Gematik_Logo_Flag_With_Background.png"/> <br/>
+++++
+endif::[]
+= VSDM 2.0 POC
+
+++++
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+       <ul>
+        <li><a href="#release-notes">Release Notes</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#running-tests">Running Tests</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#how-it-works">How it works</a>
+      <ul>
+        <li><a href="#zion-server">Zion Server</a></li>
+        <li><a href="#login-feature">login.feature</a></li>
+        <li><a href="#popp-token">poppTokenTemplate.json</a></li>
+        <li><a href="#zion-assignments">Zion Assignment</a></li>
+        <li><a href="#vsdm-answer">vsdmAnswer.xml</a></li>
+        <li><a href="#workflow-ui">WorkflowUI</a></li>
+        <li><a href="#results">Results</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
+++++
+
+== About The Project[[about-the-project]]
+This repository provides a demonstration of a VSDM 2.0 server.
+
+The server is embedded in a test suite that demonstrates its operations. After running the tests, you can find a detailed description of the specific queries in the `target/site/serenity/downloadable` folder (you can view the test suite results in `target/site/serenity/index.html`).
+
+=== Release Notes[[release-notes]]
+See `link:ReleaseNotes.md[ReleaseNotes]` for all information regarding the (newest) releases.
+
+== Getting Started[[getting-started]]
+
+=== Prerequisites[[prerequisites]]
+To run this, you will need:
+
+- Java (>=17)
+- Maven (3.x, tested with 3.9.4)
+- Internet access (for downloading artifacts)
+
+=== Running Tests[[running-tests]]
+
+You can easily run the test suite from the command line using `mvn clean install`.
+
+== How It Works[[how-it-works]]
+
+The `tiger.yaml` file describes the test environment's structure, as well as the configuration of the VSDM server itself. If you want to dive deeper into the project, it's worth taking a look there. For a better understanding of Tiger and its capabilities, you can refer to the User Manual: [Tiger User Manual](https://gematik.github.io/app-Tiger/Tiger-User-Manual.html).
+
+In brief, a test suite is executed. Tiger first starts a test environment. The necessary servers for this are listed in `tiger.yaml` under `servers`, and in this case, it's the `vsdmServer`. Its type is defined as `zion`.
+
+=== Zion Server[[zion-server]]
+
+Zion stands for "Zero-Line mock server." Zion can do more than a regular mock server (it allows a certain degree of interactivity), but it's far less capable than a real POC (there are limits to interactivity, and migration to a "real" implementation is not possible). It's designed for quick, codeless sketching of interfaces and interactions.
+
+A Zion server, as described in this example, is defined by a list of responses. When a new request is received, all stored responses are checked to find one for which all `requestCriterions` are true. Then, the `assignments` are carried out (these can be used to store values from the request, persist them, or reference them in the response). Finally, the stored response is returned. There's also the possibility to send requests to backend services and refine the response based on the replies, but that's not used in this example.
+
+For more details about Zion and the possibilities it offers, you can refer to the User Manual: [Tiger Zion](https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_tiger_zion).
+
+=== login.feature[[login-feature]]
+
+A journey through the message flow begins in the test suite itself. After starting the test environment, the test from `login.feature` is executed. The steps that begin with `TGR` in that file come directly from the Tiger Test framework. Here's an overview of the actions:
+
+- First, we set the value of `insurant.telematikId` to the given value. This value will be used to query the user generated in `vsdmUsers.yaml`. This is the Telematik-ID (equivalent to the KVNR) of the insurant (Versicherter). The value here is not a valid KVNR but merely a placeholder.
+- We set a new default header for subsequent HTTP requests. Here, a Bearer Token is set, which is read from the `poppTokenTemplate.json` file.
+- Then, we send a `GET` request to the configured URL (in this case, it's the URL of the Zion server, and the port used is specified in `tiger.yaml` for the Zion server).
+- Finally, we check if the expected values are present in the response.
+
+=== poppTokenTemplate.json[[popp-token]]
+
+In the `poppTokenTemplate.json` file, the Bearer Token used for the request is described. It roughly follows the format of a Popp Token (https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Vorabveroeffentlichungen/Edge/gemF_PoPP_V0.7.0_CC.pdf). Three points are of interest in this file:
+
+- First, the value `body.tid` should be mentioned. Here, it references the value set for `insurant.telematikId` in the feature file and inserts it into the token.
+- The token is a JSON, but the `tgrEncodeAs` field ensures a format transformation. At the moment of serialization (which happens when `TGR set the default header` is executed), the JSON is converted into a JWT. The three parts, `body`, `header`, and `signature`, are taken and processed accordingly.
+- Under `signature.verifiedUsing`, the value of the key used to verify the token is mentioned. The key is loaded from the `src/test/resources/poppServer.p12` file when the test suite starts. As this file provides a key pair, the test suite can sign the token during serialization with the matching private key.
+
+=== Zion Assignment[[zion-assignments]]
+
+After both request criteria are checked and approved, the server performs the assignment. The variable `insurantId` is set to the referenced value. The string `$.header.authorization..body.tid` represents an RbelPath, a Tiger-specific construct that allows you to navigate in structures similarly to JsonPath or XPath. Here, we extract the Bearer Token from an HTTP header, look into the contained JWT, and read the nested JSON. As a result, the `tid` claim is extracted. (After this assignment, `insurant.telematikId` is equal to `insurantId`).
+
+=== vsdmAnswer.xml[[vsdm-answer]]
+
+After the assignment, the response is prepared. It's loaded from the `vsdmAnswer.xml` file, which essentially matches the response to the client. However, this file contains some placeholders that need to be resolved beforehand.
+
+For example, under `Bundle.entry.resource.Patient.name.family`, you'll find the expression `${vsdm.insurant.${insurantId}.familyName}`. We've just assigned `insurantId`. But where does the value for `vsdm.insurant...` come from? In the `tiger.yaml` file, there's a block called `additionalYamls`. It reads the `vsdmUsers.yaml` file and mounts it at the specific location `vsdm`. This is how we get to the final key `vsdm.insurant.my-super-telematik-id.familyName`. The value must be `Meier`, which is then written into the XML accordingly.
+
+=== WorkflowUI[[workflow-ui]]
+
+If you set the value `activateWorkflowUi` to `true` in the second line of the `tiger.yaml` file, a web page will open when you run the test suite again. It will display extensive information about the test environment and the executed test steps.
+
+=== Results[[results]]
+
+The results are freshly generated after each run:
+
+- An overview of all the tests is available at `target/site/serenity/index.html`.
+- Communication protocols can be found in `target/site/serenity/downloadable`.
+
+![Sample Screenshot](doc/rbel_screen.png)
+
+== Contributing[[contributing]]
+If you want to contribute, please check our `link:CONTRIBUTING.md[CONTRIBUTING.md]`.
+
+== License[[license]]
+This project is licensed under the Apache 2.0 license.
+
+== Contact[[contact]]
+If you have questions or want to get in contact please use the "issues" function on GitHub.
