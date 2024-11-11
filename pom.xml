@@ -8,12 +8,10 @@
     <version>0.9.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <tiger.version>2.2.1</tiger.version>
-        <version.maven.failsafe>3.0.0</version.maven.failsafe>
-        <version.junit4>4.13.2</version.junit4>
-        <version.junit5>5.9.3</version.junit5>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <tiger.version>3.4.4</tiger.version>
+        <version.maven.failsafe>3.3.1</version.maven.failsafe>
     </properties>
 
     <dependencies>
@@ -23,14 +21,14 @@
             <version>${tiger.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${version.junit5}</version>
-        </dependency>
-        <dependency>
             <groupId>de.gematik.test</groupId>
             <artifactId>tiger-zion</artifactId>
             <version>${tiger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.8</version>
         </dependency>
     </dependencies>
 
