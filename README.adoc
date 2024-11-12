@@ -119,7 +119,8 @@ The results are freshly generated after each run:
 - An overview of all the tests is available at `target/site/serenity/index.html`.
 - Communication protocols can be found in `target/site/serenity/downloadable`.
 
-![Sample Screenshot](doc/rbel_screen.png)
+.The resulting communication log
+image::doc/rbel_screen.png[rbelflow,width=600,height=47]
 
 == Contributing[[contributing]]
 If you want to contribute, please check our `link:CONTRIBUTING.md[CONTRIBUTING.md]`.
