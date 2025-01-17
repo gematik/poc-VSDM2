@@ -30,7 +30,7 @@ endif::[]
       <a href="#how-it-works">How it works</a>
       <ul>
         <li><a href="#zion-server">Zion Server</a></li>
-        <li><a href="#login-feature">login.feature</a></li>
+        <li><a href="#readVSD-feature">readVSD.feature</a></li>
         <li><a href="#popp-token">poppTokenTemplate.json</a></li>
         <li><a href="#zion-assignments">Zion Assignment</a></li>
         <li><a href="#vsdm-answer">vsdmAnswer.xml</a></li>
@@ -81,9 +81,9 @@ A Zion server, as described in this example, is defined by a list of responses. 
 
 For more details about Zion and the possibilities it offers, you can refer to the User Manual: [Tiger Zion](https://gematik.github.io/app-Tiger/Tiger-User-Manual.html#_tiger_zion).
 
-=== login.feature[[login-feature]]
+=== readVSD.feature[[readVSD-feature]]
 
-A journey through the message flow begins in the test suite itself. After starting the test environment, the test from `login.feature` is executed. The steps that begin with `TGR` in that file come directly from the Tiger Test framework. Here's an overview of the actions:
+A journey through the message flow begins in the test suite itself. After starting the test environment, the test from `readVSD.feature` is executed. The steps that begin with `TGR` in that file come directly from the Tiger Test framework. Here's an overview of the actions:
 
 - First, we set the value of `insurant.telematikId` to the given value. This value will be used to query the user generated in `vsdmUsers.yaml`. This is the Telematik-ID (equivalent to the KVNR) of the insurant (Versicherter). The value here is not a valid KVNR but merely a placeholder.
 - We set a new default header for subsequent HTTP requests. Here, a Bearer Token is set, which is read from the `poppTokenTemplate.json` file.

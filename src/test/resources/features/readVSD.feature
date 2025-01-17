@@ -1,4 +1,4 @@
-Feature: Login
+Feature: ReadVSD
 
   Scenario: Stammdaten abfragen für einfachen Benutzer
     Given TGR setze globale Variable "insurant.telematikId" auf "meine-super-telematik-id"
