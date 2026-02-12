@@ -1,3 +1,7 @@
+image:http://unmaintained.tech/badge.svg[No Maintenance Intended,link=http://unmaintained.tech/]
+image:https://img.shields.io/badge/Maintained%3F-no-red.svg[Maintenance,link=https://bitbucket.org/lbesson/ansi-colors]
+image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License,link=https://opensource.org/licenses/Apache-2.0]
+
 :doctype: book
 ifndef::env-github[]
 image::doc/Gematik_Logo_Flag_With_Background.png[logo,width=200,height=47,role=right]
@@ -45,10 +49,6 @@ endif::[]
   </ol>
 </details>
 ++++
-
-image:http://unmaintained.tech/badge.svg[No Maintenance Intended,link=http://unmaintained.tech/]
-image:https://img.shields.io/badge/Maintained%3F-no-red.svg[Maintenance,link=https://bitbucket.org/lbesson/ansi-colors]
-image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License,link=https://opensource.org/licenses/Apache-2.0]
 
 == About The Project[[about-the-project]]
 This repository provides a demonstration of a VSDM 2.0 server.
